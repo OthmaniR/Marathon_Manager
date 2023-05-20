@@ -1,6 +1,7 @@
 package com.example.marathon_manager;
 
 import Model.Db_Connect;
+import Model.Marathon;
 import Model.Runner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -83,6 +84,9 @@ public class RunnerController {
     private TextField gender_text;
 
     @FXML
+    private TextField last_name_text;
+
+    @FXML
     private TextField email_text;
 
     @FXML
@@ -92,8 +96,13 @@ public class RunnerController {
     private TableColumn<Runner, Integer> runnerIdColumn;
 
     @FXML
+    private TableColumn<Marathon,String> MarathonNameColumn;
+
+    @FXML
     private TableColumn<Runner, String> nameColumn;
 
+    @FXML
+    private TableColumn<Runner, String> lastNameColu;
     @FXML
     private TableColumn<Runner, Integer> ageColumn;
 
@@ -106,15 +115,21 @@ public class RunnerController {
     @FXML
     private TableColumn<Runner, String> emailColumn;
 
+    @FXML
+    private ComboBox marathon_combo;
+
+    public static int Ma_Id = 0;
+
     public void initialize_Runner() {
         // Set up table columns
         runnerIdColumn.setCellValueFactory(new PropertyValueFactory<>("runnerId"));
+        MarathonNameColumn.setCellValueFactory(new PropertyValueFactory<>("marathonName"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+        lastNameColu.setCellValueFactory(new PropertyValueFactory<>("last_name"));
         ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-
         // Set up data in the table
         runnerTable.setItems(getRunners());
     }
@@ -126,18 +141,31 @@ public class RunnerController {
         try (
                 Connection con = Db_Connect.Connect_Db();
                 PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner");
-                ResultSet resultSet = stmt.executeQuery()
+                PreparedStatement stmt2 = con.prepareStatement("SELECT name FROM marathon WHERE marathon_id = ?");
+                ResultSet resultSet = stmt.executeQuery();
+
+
         ) {
             while (resultSet.next()) {
+                System.out.println("Runner table loaded.");
                 int runnerId = resultSet.getInt("runner_id");
-                String name = resultSet.getString("name");
+                int marathonId = resultSet.getInt("marathon_id");
+                String name = resultSet.getString("first_name");
+                String last_name = resultSet.getString("last_name");
                 int age = resultSet.getInt("age");
-                String phone = resultSet.getString("phone");
+                String phone = resultSet.getString("phone_number");
                 String gender = resultSet.getString("gender");
                 String email = resultSet.getString("email");
-                Runner runner = new Runner(runnerId, name, String.valueOf(age), phone, gender, email);
-                runners.add(runner);
+                stmt2.setInt(1, marathonId);
+                ResultSet resultSet2 = stmt2.executeQuery();
+                if (resultSet2.next()) {
+                    String marathonName = resultSet2.getString("name");
+                    System.out.println(marathonName);
+                    Runner runner = new Runner(runnerId, name, last_name, marathonId, marathonName, age,gender,email,phone);
+                    runners.add(runner);
+                }
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to load the runner into the database.");
@@ -152,7 +180,7 @@ public class RunnerController {
             lbl_status.setText("Marathon");
             lbl_status_mini.setText("Marathon");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Dashboard.fxml");
+            showInterface("Marathon-view.fxml");
         } else if (event.getSource() == runner_btn) {
             lbl_status.setText("Runner");
             lbl_status_mini.setText("Runner");
@@ -199,27 +227,40 @@ public class RunnerController {
 
     @FXML
     private void insert_runner() {
+
         String name = name_text.getText();
+        String last_name = last_name_text.getText();
         int age = Integer.parseInt(age_text.getText());
         String phone = phone_text.getText();
         String gender = gender_text.getText();
         String email = email_text.getText();
+        String marathon_name = marathon_combo.getValue().toString();
 
         // Insert values into the database
         try {
-            Connection conn = Db_Connect.Connect_Db();
-            if (conn != null) {
-                PreparedStatement statement = conn.prepareStatement(
-                        "INSERT INTO runner (name, age, phone, gender, email) " +
-                                "VALUES (?, ?, ?, ?, ?)");
+            Connection con = Db_Connect.Connect_Db();
+            PreparedStatement stmt = con.prepareStatement("SELECT marathon_id FROM marathon WHERE name = ?");
+            stmt.setString(1, marathon_name); // Set the name parameter
+            ResultSet resultSet = stmt.executeQuery();
+            if (resultSet.next()) {
+                 Ma_Id =  resultSet.getInt("marathon_id");
+            }
+            if (con != null) {
+                PreparedStatement statement = con.prepareStatement(
+                        "INSERT INTO runner (first_name, age, phone_number, gender, email,marathon_id,last_name) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?)");
                 statement.setString(1, name);
                 statement.setInt(2, age);
                 statement.setString(3, phone);
                 statement.setString(4, gender);
                 statement.setString(5, email);
+                System.out.println(Ma_Id);
+                statement.setInt(6, Ma_Id);
+                statement.setString(7, last_name);
                 statement.executeUpdate();
-                clearFields();
+                //clearFields();
                 initialize_Runner();
+                clearFields();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -229,20 +270,24 @@ public class RunnerController {
 
     @FXML
     private void updateRunner(ActionEvent actionEvent) {
+        System.out.println(Ma_Id);
         try (Connection con = Db_Connect.Connect_Db();
-             PreparedStatement stmt = con.prepareStatement("UPDATE runner SET name = ?, age = ?, phone = ?, gender = ?, email = ? WHERE runner_id = ?")) {
+             PreparedStatement stmt = con.prepareStatement("UPDATE runner SET first_name = ?, age = ?, phone_number = ?, gender = ?, email = ?,marathon_id = ?,last_name = ? WHERE runner_id = ?")) {
 
             stmt.setString(1, name_text.getText());
             stmt.setInt(2, Integer.parseInt(age_text.getText()));
             stmt.setString(3, phone_text.getText());
             stmt.setString(4, gender_text.getText());
             stmt.setString(5, email_text.getText());
-            stmt.setInt(6, Integer.parseInt(runner_id_text.getText()));
+            stmt.setInt(6,getidMarathon());
+            stmt.setString(7, last_name_text.getText());
+            stmt.setInt(8, Integer.parseInt(runner_id_text.getText()));
 
             stmt.executeUpdate();
 
             // Refresh the runner table
             initialize_Runner();
+            clearFields();
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to update runner" + e.getMessage());
@@ -260,6 +305,7 @@ public class RunnerController {
 
             // Refresh the runner table
             initialize_Runner();
+            clearFields();
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to delete runner" + e.getMessage());
@@ -282,22 +328,13 @@ public class RunnerController {
         clearFields();
     }
 
-    @FXML
-    void getSelected(MouseEvent event) {
-        int index = runnerTable.getSelectionModel().getSelectedIndex();
-        if (index <= -1) {
-            return;
-        }
-        runner_id_text.setText(runnerIdColumn.getCellData(index).toString());
-        name_text.setText(nameColumn.getCellData(index).toString());
-        age_text.setText(ageColumn.getCellData(index).toString());
-        phone_text.setText(phoneColumn.getCellData(index).toString());
-        gender_text.setText(genderColumn.getCellData(index).toString());
-        email_text.setText(emailColumn.getCellData(index).toString());
-    }
+
+
     private void clearFields() {
         runner_id_text.clear();
         name_text.clear();
+        last_name_text.clear();
+        marathon_combo.setValue("Marathon Name");
         age_text.clear();
         phone_text.clear();
         gender_text.clear();
@@ -319,6 +356,69 @@ public class RunnerController {
             System.out.println("Error");
         }
 
+    }
+
+
+    public void Marathon_Name_Combobox() {
+
+        String s = "";
+        if (marathon_combo.getValue() != null) {
+            s = (String) marathon_combo.getValue();
+            System.out.println(s);
+        } else {
+            System.out.println("No value selected");
+        }
+    }
+
+    @FXML
+    public void select_Combobox(javafx.scene.input.MouseEvent mouseEvent) {
+        try (Connection con = Db_Connect.Connect_Db();
+             PreparedStatement stmt = con.prepareStatement("Select marathon_id,name  FROM marathon ")) {
+            ObservableList data = FXCollections.observableArrayList();
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                data.add(resultSet.getString("name"));
+            }
+            marathon_combo.setItems(data);
+
+        } catch ( SQLException e) {
+            System.out.println("Error");
+        }
+    }
+
+    public void getSelectedColu(javafx.scene.input.MouseEvent mouseEvent) {
+
+        int index = runnerTable.getSelectionModel().getSelectedIndex();
+        if (index <= -1) {
+            return;
+        }
+        runner_id_text.setText(runnerIdColumn.getCellData(index).toString());
+        name_text.setText(nameColumn.getCellData(index).toString());
+        last_name_text.setText(lastNameColu.getCellData(index).toString());
+        marathon_combo.setValue(MarathonNameColumn.getCellData(index).toString());
+        age_text.setText(ageColumn.getCellData(index).toString());
+        phone_text.setText(phoneColumn.getCellData(index).toString());
+        gender_text.setText(genderColumn.getCellData(index).toString());
+        email_text.setText(emailColumn.getCellData(index).toString());
+
+    }
+
+
+    public int getidMarathon(){
+        String marathon_name = marathon_combo.getValue().toString();
+        try (
+        Connection con = Db_Connect.Connect_Db();
+        PreparedStatement stmt = con.prepareStatement("SELECT marathon_id FROM marathon WHERE name = ?")){
+        stmt.setString(1, marathon_name); // Set the name parameter
+        ResultSet resultSet = stmt.executeQuery();
+        if (resultSet.next()) {
+            Ma_Id =  resultSet.getInt("marathon_id");
+        }
+        System.out.println(Ma_Id);
+    }catch (SQLException e) {
+        e.printStackTrace();
+    }
+        return Ma_Id;
     }
 }
 

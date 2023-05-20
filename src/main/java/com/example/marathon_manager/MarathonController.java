@@ -100,6 +100,9 @@ public class MarathonController {
     @FXML
     private TableColumn<Marathon, Double> distanceColumn;
 
+    @FXML
+    private TableColumn<Marathon, Double> WinnerColumn;
+
 
     public void initialize_Marathon() {
         // Set up table columns
@@ -109,7 +112,7 @@ public class MarathonController {
         startLocationColumn.setCellValueFactory(new PropertyValueFactory<>("startLocation"));
         finishLocationColumn.setCellValueFactory(new PropertyValueFactory<>("finishLocation"));
         distanceColumn.setCellValueFactory(new PropertyValueFactory<>("distance"));
-
+        WinnerColumn.setCellValueFactory(new PropertyValueFactory<>("winner"));
         // Set up data in the table
        marathonTable.setItems(getMarathons());
     }
@@ -130,7 +133,8 @@ public class MarathonController {
                String startLocation = resultSet.getString("start_location");
                String finishLocation = resultSet.getString("finish_location");
                Double distance = resultSet.getDouble("distance");
-               Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance);
+               String winner = resultSet.getString("Winner");
+               Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
                marathons.add(marathon);
            }
        } catch (SQLException e) {
@@ -310,20 +314,7 @@ public class MarathonController {
         distance_text.clear();
         datePicker.setValue(null);
     }
-    @FXML
-    void getSelected(MouseEvent event) {
-      int  index = marathonTable.getSelectionModel().getSelectedIndex();
-        if (index <= -1) {
 
-            return;
-        }
-        marathon_id_text.setText(marathonIdColumn.getCellData(index).toString());
-        name_text.setText(nameColumn.getCellData(index).toString());
-        datePicker.setValue(dateColumn.getCellData(index).toLocalDate());
-        start_location_text.setText(startLocationColumn.getCellData(index).toString());
-        finish_location_text.setText(finishLocationColumn.getCellData(index).toString());
-        distance_text.setText(distanceColumn.getCellData(index).toString());
-    }
 
     public void getSelected(javafx.scene.input.MouseEvent mouseEvent) {
         int  index = marathonTable.getSelectionModel().getSelectedIndex();
@@ -333,7 +324,7 @@ public class MarathonController {
         }
         marathon_id_text.setText(marathonIdColumn.getCellData(index).toString());
         name_text.setText(nameColumn.getCellData(index).toString());
-       // datePicker.setValue(dateColumn.setCellValueFactory(index).toLocalDate());
+        datePicker.setValue(dateColumn.getCellData(index).toLocalDate());
         start_location_text.setText(startLocationColumn.getCellData(index).toString());
         finish_location_text.setText(finishLocationColumn.getCellData(index).toString());
         distance_text.setText(distanceColumn.getCellData(index).toString());

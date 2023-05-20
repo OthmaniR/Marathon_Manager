@@ -137,16 +137,6 @@
                 <RowConstraints maxHeight="334.3999755859375" minHeight="10.0" prefHeight="326.1999877929687" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="337.0" prefWidth="756.0" stylesheets="@fullpackstyling.css" GridPane.rowIndex="2">
-                    <columns>
-                        <TableColumn fx:id="marathonIdColumn" prefWidth="107.20001220703125" text="marathon_id " />
-                        <TableColumn fx:id="nameColumn" prefWidth="124.7999267578125" text="name" />
-                        <TableColumn fx:id="dateColumn" prefWidth="128.00003051757812" text="date" />
-                        <TableColumn fx:id="startLocationColumn" prefWidth="143.20001220703125" text="start_location" />
-                        <TableColumn fx:id="finishLocationColumn" prefWidth="128.79998779296875" text="finish_location" />
-                        <TableColumn fx:id="distanceColumn" prefWidth="131.199951171875" text="distance" />
-                    </columns>
-                </TableView>
                 <HBox prefHeight="42.0" prefWidth="756.0" GridPane.rowIndex="1">
                     <children>
                         <FontAwesomeIcon glyphName="SEARCH" size="1.5em" wrappingWidth="16.000015258789062" />
@@ -179,6 +169,17 @@
                         </Button>
                     </children>
                 </HBox>
+            <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+              <columns>
+                <TableColumn fx:id="marathonIdColumn" prefWidth="78.4000244140625" text="Marathon_id" />
+                <TableColumn fx:id="nameColumn" prefWidth="87.20001220703125" text="Name" />
+                  <TableColumn fx:id="dateColumn" prefWidth="104.79998779296875" text="Date" />
+                  <TableColumn fx:id="startLocationColumn" prefWidth="119.99993896484375" text="Start_Location" />
+                  <TableColumn fx:id="finishLocationColumn" prefWidth="129.60009765625" text="Finish_Location" />
+                  <TableColumn fx:id="distanceColumn" prefWidth="120.79998779296875" text="Distance" />
+                  <TableColumn fx:id="WinnerColumn" prefWidth="116.79998779296875" text="Winner" />
+              </columns>
+            </TableView>
             </children>
         </GridPane>
         <Pane fx:id="pnl_status" layoutX="239.0" prefHeight="78.0" prefWidth="759.0" style="-fx-background-color: #1D267D;" AnchorPane.leftAnchor="239.0" AnchorPane.rightAnchor="-1.0">

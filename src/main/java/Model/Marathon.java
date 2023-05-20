@@ -2,9 +2,7 @@ package Model;
 
 
 import javafx.beans.property.*;
-import javafx.scene.control.Alert;
 
-import java.sql.*;
 import java.time.LocalDate;
 
 public class Marathon {
@@ -14,25 +12,28 @@ public class Marathon {
     private final StringProperty startLocation;
     private final StringProperty finishLocation;
     private final DoubleProperty distance;
+    private final StringProperty Winner;
 
 
 
-    public Marathon(int marathonId, String name, LocalDate date, String startLocation, String finishLocation, double distance) {
+    public Marathon(int marathonId, String name, LocalDate date, String startLocation, String finishLocation, double distance, String winner) {
         this.marathonId = new SimpleIntegerProperty(marathonId);
         this.name = new SimpleStringProperty(name);
         this.date = new SimpleObjectProperty<>(date);
         this.startLocation = new SimpleStringProperty(startLocation);
         this.finishLocation = new SimpleStringProperty(finishLocation);
         this.distance = new SimpleDoubleProperty(distance);
+        this.Winner = new SimpleStringProperty(winner);
     }
 
-    public Marathon(IntegerProperty marathonId, String name, LocalDate date, String startLocation, String finishLocation, double distance) {
+    public Marathon(IntegerProperty marathonId, String name, LocalDate date, String startLocation, String finishLocation, double distance, String winner) {
         this.marathonId = marathonId;
         this.name = new SimpleStringProperty(name);
         this.date = new SimpleObjectProperty<>(date);
         this.startLocation = new SimpleStringProperty(startLocation);
         this.finishLocation = new SimpleStringProperty(finishLocation);
         this.distance = new SimpleDoubleProperty(distance);
+        this.Winner = new SimpleStringProperty(winner);
     }
 
     public int getMarathonId() {
@@ -103,8 +104,17 @@ public class Marathon {
         this.distance.set(distance);
     }
 
+    public String getWinner() {
+        return Winner.get();
+    }
 
+    public StringProperty winnerProperty() {
+        return Winner;
+    }
 
+    public void setWinner(String winner) {
+        this.Winner.set(winner);
+    }
 }
 
 
