@@ -1,7 +1,6 @@
 package com.example.marathon_manager;
 
 import Model.Db_Connect;
-import Model.Marathon;
 import Model.Runner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,42 +19,17 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Date;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 public class RunnerController {
-
-    @FXML
-    private TableColumn<Runner, String> runnerIdColumn;
-
-    @FXML
-    private TableColumn<Runner, String> nameColumn;
-
-    @FXML
-    private TableColumn<Runner, Date> ageColumn;
-
-    @FXML
-    private TableColumn<Runner, String> genderColumn;
-
-    @FXML
-    private TableColumn<Runner, String> emailColumn;
-
-    @FXML
-    private TableColumn<Runner, String> phoneColumn;
-
     @FXML
     private Button chrono_btn;
-
-    @FXML
-    private Button dashboard_btn;
-
-
 
     @FXML
     private Label lbl_status;
@@ -64,60 +38,91 @@ public class RunnerController {
     private Label lbl_status_mini;
 
     @FXML
-    private TableView<Runner> Runner_Table;
-
-    @FXML
     private Button marathon_btn;
+
     @FXML
     private Button participation_btn;
-
-
 
     @FXML
     private Pane pnl_status;
 
     @FXML
-    private TextField runner_age_text;
-
-    @FXML
     private Button runner_btn;
 
     @FXML
-    private TextField runner_email_text;
-
-    @FXML
-    private TextField runner_gender_text;
-
-    @FXML
-    private TextField runner_id_text;
-
-    @FXML
-    private TextField runner_name_text;
-
-    @FXML
-    private TextField runner_phone_text;
+    private Button dashboard_btn;
 
     @FXML
     private Button sponsor_btn;
 
     @FXML
+    private Button insert_btn;
+
+    @FXML
     private Button test_btn;
 
-    public void initialize_Runner(){
+    @FXML
+    private Label lbl_runner;
+
+    @FXML
+    private Button addnewBtn;
+
+    @FXML
+    private TextField runner_id_text;
+
+    @FXML
+    private TextField name_text;
+
+    @FXML
+    private TextField age_text;
+
+    @FXML
+    private TextField phone_text;
+
+    @FXML
+    private TextField gender_text;
+
+    @FXML
+    private TextField email_text;
+
+    @FXML
+    private TableView<Runner> runnerTable;
+
+    @FXML
+    private TableColumn<Runner, Integer> runnerIdColumn;
+
+    @FXML
+    private TableColumn<Runner, String> nameColumn;
+
+    @FXML
+    private TableColumn<Runner, Integer> ageColumn;
+
+    @FXML
+    private TableColumn<Runner, String> phoneColumn;
+
+    @FXML
+    private TableColumn<Runner, String> genderColumn;
+
+    @FXML
+    private TableColumn<Runner, String> emailColumn;
+
+    public void initialize_Runner() {
+        // Set up table columns
         runnerIdColumn.setCellValueFactory(new PropertyValueFactory<>("runnerId"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         genderColumn.setCellValueFactory(new PropertyValueFactory<>("gender"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-        phoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
-        Runner_Table.getRunner();
+
+        // Set up data in the table
+        runnerTable.setItems(getRunners());
     }
 
-    public static ObservableList<Runner> getRunner() {
+    public static ObservableList<Runner> getRunners() {
+        ObservableList<Runner> runners = FXCollections.observableArrayList();
 
-        ObservableList<Runner> Runners = FXCollections.observableArrayList();
-
-        Runners.clear();
+        runners.clear();
         try (
                 Connection con = Db_Connect.Connect_Db();
                 PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner");
@@ -126,79 +131,183 @@ public class RunnerController {
             while (resultSet.next()) {
                 int runnerId = resultSet.getInt("runner_id");
                 String name = resultSet.getString("name");
-                LocalDate date = resultSet.getDate("age").toLocalDate();
-                String age = resultSet.getString("gender");
+                int age = resultSet.getInt("age");
+                String phone = resultSet.getString("phone");
+                String gender = resultSet.getString("gender");
                 String email = resultSet.getString("email");
-                String phoneNumber = resultSet.getString("phone_number");
-                Runner runner = new Runner(runnerId, name, date, age, email,phoneNumber);
-                Runners.add(runner);
+                Runner runner = new Runner(runnerId, name, String.valueOf(age), phone, gender, email);
+                runners.add(runner);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to load marathons from the database.");
+            showAlert("Error", "Failed to load the runner into the database.");
         }
 
-        return marathons;
+        return runners;
     }
-
-    public void showRunner() {
-        Runner selectedRunner = Runner_Table.getSelectionModel().getSelectedItem();
-        if (selectedRunner != null) {
-            runnerIdText.setText(selectedRunner.getRunnerId());
-            runnerNameText.setText(selectedRunner.getName());
-            runnerAgeText.setText(String.valueOf(selectedRunner.getAge()));
-            runnerGenderText.setText(selectedRunner.getGender());
-            runnerEmailText.setText(selectedRunner.getEmail());
-            runnerPhoneText.setText(selectedRunner.getPhone());
-        }
-    }
-
 
     @FXML
     private void handleButtonAction(ActionEvent event) throws Exception {
-        if(event.getSource() == marathon_btn){
+        if (event.getSource() == marathon_btn) {
             lbl_status.setText("Marathon");
             lbl_status_mini.setText("Marathon");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Marathon-view.fxml");
-        }else if(event.getSource() == runner_btn){
+            showInterface("Dashboard.fxml");
+        } else if (event.getSource() == runner_btn) {
             lbl_status.setText("Runner");
             lbl_status_mini.setText("Runner");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Runner-view.fxml");
-        }else if(event.getSource() == sponsor_btn){
+        } else if (event.getSource() == sponsor_btn) {
             lbl_status.setText("Sponsor");
             lbl_status_mini.setText("Sponsor");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-
-        }else if(event.getSource() == participation_btn) {
+        } else if (event.getSource() == participation_btn) {
             lbl_status.setText("Participation");
             lbl_status_mini.setText("Participation");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Participant.fxml");
-        }else if(event.getSource() == chrono_btn) {
+            Stage stage = (Stage) participation_btn.getScene().getWindow();
+            stage.close();
+        } else if (event.getSource() == chrono_btn) {
             lbl_status.setText("Chrono");
             lbl_status_mini.setText("Chrono");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-
-        }else if(event.getSource() == dashboard_btn) {
+        } else if (event.getSource() == dashboard_btn) {
             lbl_status.setText("Dashboard");
             lbl_status_mini.setText("Dashboard");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Dashboard.fxml");
-            Stage stage = (Stage) participation_btn.getScene().getWindow();
-            // do what you have to do
-            stage.close();
         }
+    }
 
-
-}
-
-    private void showInterface(String name) {
+    @FXML
+    private void open_test() {
         try {
+            Parent root = FXMLLoader.load(getClass().getResource("Login-view.fxml"));
+            Scene scene = new Scene(root);
+            Stage stage = new Stage();
+            stage.initStyle(StageStyle.UNDECORATED);
+            stage.setTitle("Hello");
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            Logger logger = Logger.getLogger(getClass().getName());
+            logger.log(Level.SEVERE, "Failed to create new Window.", e);
+        }
+    }
 
+    @FXML
+    private void insert_runner() {
+        String name = name_text.getText();
+        int age = Integer.parseInt(age_text.getText());
+        String phone = phone_text.getText();
+        String gender = gender_text.getText();
+        String email = email_text.getText();
+
+        // Insert values into the database
+        try {
+            Connection conn = Db_Connect.Connect_Db();
+            if (conn != null) {
+                PreparedStatement statement = conn.prepareStatement(
+                        "INSERT INTO runner (name, age, phone, gender, email) " +
+                                "VALUES (?, ?, ?, ?, ?)");
+                statement.setString(1, name);
+                statement.setInt(2, age);
+                statement.setString(3, phone);
+                statement.setString(4, gender);
+                statement.setString(5, email);
+                statement.executeUpdate();
+                clearFields();
+                initialize_Runner();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to insert the runner into the database.");
+        }
+    }
+
+    @FXML
+    private void updateRunner(ActionEvent actionEvent) {
+        try (Connection con = Db_Connect.Connect_Db();
+             PreparedStatement stmt = con.prepareStatement("UPDATE runner SET name = ?, age = ?, phone = ?, gender = ?, email = ? WHERE runner_id = ?")) {
+
+            stmt.setString(1, name_text.getText());
+            stmt.setInt(2, Integer.parseInt(age_text.getText()));
+            stmt.setString(3, phone_text.getText());
+            stmt.setString(4, gender_text.getText());
+            stmt.setString(5, email_text.getText());
+            stmt.setInt(6, Integer.parseInt(runner_id_text.getText()));
+
+            stmt.executeUpdate();
+
+            // Refresh the runner table
+            initialize_Runner();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to update runner" + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void deleteRunner(ActionEvent actionEvent) {
+        try (Connection con = Db_Connect.Connect_Db();
+             PreparedStatement stmt = con.prepareStatement("DELETE FROM runner WHERE runner_id = ?")) {
+
+            stmt.setInt(1, Integer.parseInt(runner_id_text.getText()));
+
+            stmt.executeUpdate();
+
+            // Refresh the runner table
+            initialize_Runner();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to delete runner" + e.getMessage());
+        }
+    }
+    private static void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void addnew_runner() {
+        lbl_runner.setVisible(false);
+        runner_id_text.setVisible(false);
+        insert_btn.setVisible(true);
+        addnewBtn.setVisible(false);
+        clearFields();
+    }
+
+    @FXML
+    void getSelected(MouseEvent event) {
+        int index = runnerTable.getSelectionModel().getSelectedIndex();
+        if (index <= -1) {
+            return;
+        }
+        runner_id_text.setText(runnerIdColumn.getCellData(index).toString());
+        name_text.setText(nameColumn.getCellData(index).toString());
+        age_text.setText(ageColumn.getCellData(index).toString());
+        phone_text.setText(phoneColumn.getCellData(index).toString());
+        gender_text.setText(genderColumn.getCellData(index).toString());
+        email_text.setText(emailColumn.getCellData(index).toString());
+    }
+    private void clearFields() {
+        runner_id_text.clear();
+        name_text.clear();
+        age_text.clear();
+        phone_text.clear();
+        gender_text.clear();
+        email_text.clear();
+    }
+
+
+    private void showInterface(String name) throws Exception {
+        try {
             Parent root = FXMLLoader.load(getClass().getResource(name));
-
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
@@ -209,14 +318,9 @@ public class RunnerController {
         } catch (IOException e) {
             System.out.println("Error");
         }
+
     }
+}
 
 
-    private static void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-    }
+
