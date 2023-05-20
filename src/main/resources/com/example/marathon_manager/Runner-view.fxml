@@ -103,7 +103,7 @@
                     <graphic>
                         <ImageView fitHeight="29.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@Assets/stopwatch%20(1).png" />
+                                <Image url="@Assets/stopwatch (1).png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -203,5 +203,30 @@
             <ComboBox prefWidth="150.0" promptText="Gender" GridPane.columnIndex="3" />
             </children>
         </GridPane>
+        <HBox prefHeight="46.0" prefWidth="756.0">
+            <children>
+                <Button fx:id="addnewBtn" mnemonicParsing="false" onAction="#addnew_runner" prefHeight="26.0" prefWidth="139.0" stylesheets="@fullpackstyling.css" text="Add New" textFill="WHITE" />
+                <Button fx:id="show_btn" mnemonicParsing="false" onAction="#initialize_Runner" prefHeight="26.0" prefWidth="100.0" stylesheets="@fullpackstyling.css" text="Show" textFill="#fffbfb">
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="updateBtn" mnemonicParsing="false" onAction="#updateRunner" prefHeight="26.0" prefWidth="100.0" stylesheets="@fullpackstyling.css" text="Update" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#deleteRunner" prefHeight="26.0" prefWidth="100.0" stylesheets="@fullpackstyling.css" text="Delete" textFill="WHITE">
+                    <HBox.margin>
+                        <Insets left="50.0" />
+                    </HBox.margin>
+                </Button>
+                <Button fx:id="insert_btn" mnemonicParsing="false" onAction="#insert_runner" prefHeight="26.0" prefWidth="100.0" stylesheets="@fullpackstyling.css" text="Insert" textFill="WHITE" visible="false">
+                    <HBox.margin>
+                        <Insets left="200.0" />
+                    </HBox.margin>
+                </Button>
+            </children>
+        </HBox>
     </children>
 </AnchorPane>
