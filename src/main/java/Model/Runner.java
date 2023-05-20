@@ -7,24 +7,24 @@ import java.time.LocalDate;
 public class Runner {
     private final IntegerProperty runnerId;
     private final StringProperty name;
-    private final ObjectProperty<LocalDate> date;
+    private final StringProperty age;
     private final StringProperty gender;
     private final StringProperty email;
     private final StringProperty phoneNumber;
 
-    public Runner(int runnerId, String name, LocalDate date, String gender, String email, String phoneNumber) {
+    public Runner(int runnerId, String name, String age, String gender, String email, String phoneNumber) {
         this.runnerId = new SimpleIntegerProperty(runnerId);
         this.name = new SimpleStringProperty(name);
-        this.date = new SimpleObjectProperty<>(date);
+        this.age = new SimpleStringProperty(age);
         this.gender = new SimpleStringProperty(gender);
         this.email = new SimpleStringProperty(email);
         this.phoneNumber = new SimpleStringProperty(phoneNumber);
     }
 
-    public Runner(IntegerProperty runnerId, String name, LocalDate date, String gender, String email, String phoneNumber) {
+    public Runner(IntegerProperty runnerId, String name, String  age, String gender, String email, String phoneNumber) {
         this.runnerId = runnerId;
         this.name = new SimpleStringProperty(name);
-        this.date = new SimpleObjectProperty<>(date);
+        this.age = new SimpleStringProperty(age);
         this.gender = new SimpleStringProperty(gender);
         this.email = new SimpleStringProperty(email);
         this.phoneNumber = new SimpleStringProperty(phoneNumber);
@@ -56,13 +56,18 @@ public class Runner {
 
 
 
-    public ObjectProperty<LocalDate> dateProperty() {
-        return date;
+    public String getAge() {
+        return name.get();
     }
 
-    public void setDate(LocalDate date) {
-        this.date.set(date);
+    public StringProperty ageProperty() {
+        return name;
     }
+
+    public void setAge(String age) {
+        this.age.set(age);
+    }
+
 
 
     public String getGender() {
