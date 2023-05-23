@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,12 +24,14 @@ import javafx.stage.StageStyle;
 import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
-public class RunnerController {
+public class RunnerController implements Initializable {
     @FXML
     private Button chrono_btn;
 
@@ -118,7 +121,42 @@ public class RunnerController {
     @FXML
     private ComboBox marathon_combo;
 
+    @FXML
+    private Button show_btn;
+
+    @FXML
+    private Button deleteBtn;
+
+
+
+    @FXML
+    private Button updateBtn;
+
+    @FXML
+    private Button rankingBtn;
+
     public static int Ma_Id = 0;
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        if(LoginviewController.role.equals("user")){
+            runnerTable.setVisible(false);
+            show_btn.setVisible(false);
+            deleteBtn.setVisible(false);
+            updateBtn.setVisible(false);
+            marathon_btn.setVisible(false);
+            participation_btn.setVisible(false);
+            sponsor_btn.setVisible(false);
+            insert_btn.setVisible(false);
+            chrono_btn.setVisible(false);
+            rankingBtn.setVisible(false);
+
+
+
+        }
+
+    }
 
     public void initialize_Runner() {
         // Set up table columns
@@ -363,7 +401,7 @@ public class RunnerController {
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Hello!");
+            stage.setTitle(name);
             stage.setScene(scene);
             stage.show();
             System.out.println(name + " is opened   ");
@@ -435,6 +473,8 @@ public class RunnerController {
     }
         return Ma_Id;
     }
+
+
 }
 
 

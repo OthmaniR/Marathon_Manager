@@ -21,7 +21,7 @@
 
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.marathon_manager.RunnerController">
         <children>
-            <VBox prefHeight="700.0" prefWidth="240.0" style="-fx-background-color: #1D267D;">
+            <VBox prefHeight="700.0" prefWidth="240.0" style="-fx-background-color: #1D267D;" stylesheets="@fullpackstyling.css">
                 <children>
                     <Pane prefHeight="129.0" prefWidth="240.0">
                         <children>
@@ -125,6 +125,21 @@
                             </ImageView>
                         </graphic>
                     </Button>
+            <Button fx:id="rankingBtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="68.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="Ranking" textFill="WHITE">
+               <padding>
+                  <Insets left="50.0" />
+               </padding>
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Assets/icons8-rank-48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
                 </children>
             </VBox>
             <GridPane layoutX="240.0" layoutY="269.0" prefHeight="404.0" prefWidth="759.0">

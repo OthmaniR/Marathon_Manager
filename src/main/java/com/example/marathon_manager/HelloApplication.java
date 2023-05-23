@@ -18,7 +18,7 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("Dashboard.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("Login-view.fxml"));
 
         Scene scene = new Scene(root);
         root.setOnMousePressed(event -> {
@@ -39,7 +39,7 @@ public class HelloApplication extends Application {
         });
 
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setTitle("Hello!");
+        stage.setTitle("Dashboard");
         stage.setScene(scene);
         stage.show();
 

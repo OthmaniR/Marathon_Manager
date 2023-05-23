@@ -32,21 +32,21 @@
                         </ImageView>
                     </children>
                 </Pane>
-            <Button fx:id="dashboard_btn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="62.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="dashboard" textFill="WHITE">
-               <padding>
-                  <Insets left="50.0" />
-               </padding>
-               <font>
-                  <Font name="System Bold" size="18.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@Assets/icons8-statistic-64.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+                <Button fx:id="dashboard_btn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="62.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="dashboard" textFill="WHITE">
+                    <padding>
+                        <Insets left="50.0" />
+                    </padding>
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                    <graphic>
+                        <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@Assets/icons8-statistic-64.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Button fx:id="marathon_btn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="62.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="Marathon" textFill="WHITE">
                     <padding>
                         <Insets left="50.0" />
@@ -146,7 +146,7 @@
                 </HBox>
                 <HBox prefHeight="46.0" prefWidth="756.0">
                     <children>
-                  <Button fx:id="addnewBtn" mnemonicParsing="false" onAction="#addnew_marathon" prefHeight="26.0" prefWidth="139.0" stylesheets="@fullpackstyling.css" text="Add New" textFill="WHITE" />
+                        <Button fx:id="addnewBtn" mnemonicParsing="false" onAction="#addnew_marathon" prefHeight="26.0" prefWidth="139.0" stylesheets="@fullpackstyling.css" text="Add New" textFill="WHITE" />
                         <Button fx:id="show_btn" mnemonicParsing="false" onAction="#initialize_Marathon" prefHeight="26.0" prefWidth="100.0" stylesheets="@fullpackstyling.css" text="Show" textFill="#fffbfb">
                             <HBox.margin>
                                 <Insets left="50.0" />
@@ -169,17 +169,17 @@
                         </Button>
                     </children>
                 </HBox>
-            <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
-              <columns>
-                <TableColumn fx:id="marathonIdColumn" prefWidth="78.4000244140625" text="Marathon_id" />
-                <TableColumn fx:id="nameColumn" prefWidth="87.20001220703125" text="Name" />
-                  <TableColumn fx:id="dateColumn" prefWidth="104.79998779296875" text="Date" />
-                  <TableColumn fx:id="startLocationColumn" prefWidth="119.99993896484375" text="Start_Location" />
-                  <TableColumn fx:id="finishLocationColumn" prefWidth="129.60009765625" text="Finish_Location" />
-                  <TableColumn fx:id="distanceColumn" prefWidth="120.79998779296875" text="Distance" />
-                  <TableColumn fx:id="WinnerColumn" prefWidth="116.79998779296875" text="Winner" />
-              </columns>
-            </TableView>
+                <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                    <columns>
+                        <TableColumn fx:id="marathonIdColumn" prefWidth="78.4000244140625" text="Marathon_id" />
+                        <TableColumn fx:id="nameColumn" prefWidth="87.20001220703125" text="Name" />
+                        <TableColumn fx:id="dateColumn" prefWidth="104.79998779296875" text="Date" />
+                        <TableColumn fx:id="startLocationColumn" prefWidth="119.99993896484375" text="Start_Location" />
+                        <TableColumn fx:id="finishLocationColumn" prefWidth="129.60009765625" text="Finish_Location" />
+                        <TableColumn fx:id="distanceColumn" prefWidth="120.79998779296875" text="Distance" />
+                        <TableColumn fx:id="WinnerColumn" prefWidth="116.79998779296875" text="Winner" />
+                    </columns>
+                </TableView>
             </children>
         </GridPane>
         <Pane fx:id="pnl_status" layoutX="239.0" prefHeight="78.0" prefWidth="759.0" style="-fx-background-color: #1D267D;" AnchorPane.leftAnchor="239.0" AnchorPane.rightAnchor="-1.0">
@@ -215,29 +215,29 @@
             </rowConstraints>
             <children>
                 <Label fx:id="lbl_marathon" text="Marathon_id">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <Label text="Name" GridPane.rowIndex="1">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <Label text="Date" GridPane.rowIndex="2">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <Label text="Start_Location" GridPane.columnIndex="2">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <Label text="Finish_Location" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <Label text="Distance" GridPane.columnIndex="2" GridPane.rowIndex="2">
-               <padding>
-                  <Insets left="20.0" />
-               </padding></Label>
+                    <padding>
+                        <Insets left="20.0" />
+                    </padding></Label>
                 <TextField fx:id="marathon_id_text" prefHeight="26.0" prefWidth="170.0" styleClass="textfield" stylesheets="@css/LoginDesign.css" GridPane.columnIndex="1" />
                 <TextField fx:id="name_text" styleClass="textfield" stylesheets="@css/LoginDesign.css" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <TextField fx:id="start_location_text" styleClass="textfield" stylesheets="@css/LoginDesign.css" GridPane.columnIndex="3" />

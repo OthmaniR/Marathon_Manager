@@ -1,7 +1,6 @@
 package com.example.marathon_manager;
 
 import Model.Db_Connect;
-import Model.Marathon;
 import Model.Participation;
 import Model.Runner;
 import javafx.collections.FXCollections;
@@ -20,10 +19,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class ParticipantController implements Initializable {
@@ -149,6 +152,12 @@ public class ParticipantController implements Initializable {
     public static int runnerId = 0;
 
     @FXML
+    private TableColumn<?, ?> EmailColumn;
+
+    @FXML
+    private TextField EmailText;
+
+    @FXML
     private void handleButtonAction(ActionEvent event) throws Exception {
         if (event.getSource() == marathon_btn) {
             lbl_status.setText("Marathon");
@@ -215,6 +224,7 @@ public class ParticipantController implements Initializable {
         firstNameColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
         lastNameColu.setCellValueFactory(new PropertyValueFactory<>("last_name"));
         ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        EmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
 
         runnerTable.setItems(getWaitingList());
 
@@ -229,6 +239,7 @@ public class ParticipantController implements Initializable {
         LocalDate registration_date = null;
         String runner_first_name = null;
         String runner_last_name = null;
+        String email = null;
         ObservableList<Participation> participations = FXCollections.observableArrayList();
         participations.clear();
         try (
@@ -262,8 +273,9 @@ public class ParticipantController implements Initializable {
 
                         runner_first_name = resultSet3.getString("first_name");
                         runner_last_name = resultSet3.getString("last_name");
+                         email = resultSet3.getString("email");
                     }
-                Participation participation = new Participation(participation_id, marathon_id, marathon_name, runner_id, runner_first_name, runner_last_name, registration_date, payment_status);
+                Participation participation = new Participation(participation_id, marathon_id, marathon_name, runner_id, runner_first_name, runner_last_name, registration_date, payment_status, email);
                 participations.add(participation);
             }
         } catch (Exception e) {
@@ -329,26 +341,6 @@ public class ParticipantController implements Initializable {
 
     }
 
-
-    @FXML
-    void addnew_marathon(ActionEvent event) {
-
-    }
-
-    @FXML
-    void deleteMarathon(ActionEvent event) {
-
-    }
-
-
-
-
-
-    @FXML
-    void updateMarathon(ActionEvent event) {
-
-    }
-
     public void Marathon_Name_Combobox() {
 
         String s = "";
@@ -405,6 +397,7 @@ public class ParticipantController implements Initializable {
         RunLastTxt.setText(lastNameColu.getCellData(index).toString());
         maraCombox.setValue(marathonNameColumn1.getCellData(index).toString());
         ageFields.setText(ageColumn.getCellData(index).toString());
+        EmailText.setText(EmailColumn.getCellData(index).toString());
 
     }
 
@@ -418,6 +411,7 @@ public class ParticipantController implements Initializable {
         LocalDate date = registerDatepicker.getValue();
         int marathon_id = getidMarathon();
         String PayedTxt = Payed_CheckBox.getText();
+        String Email = EmailText.getText();
         // Insert values into the database
         try {
 
@@ -438,8 +432,7 @@ public class ParticipantController implements Initializable {
                     participationTable.setVisible(true);
                     runnerTable.setVisible(false);
                     initialize_Participation();
-                    PreparedStatement statement1 = con.prepareStatement(
-                            "UPDATE runner SET Payment_status = ? WHERE runner_id = ?");
+                    PreparedStatement statement1 = con.prepareStatement("UPDATE runner SET Payment_status = ? WHERE runner_id = ?");
                     statement1.setString(1, PayedTxt);
                     statement1.setInt(2, runnerId);
                     statement1.executeUpdate();
@@ -449,7 +442,8 @@ public class ParticipantController implements Initializable {
             e.printStackTrace();
             showAlert("Error", "Failed to insert the runner into the database.");
         }
-
+        //acceptRunner(Email);
+       // System.out.println("Email sent successfully");
     }
 
     private static void showAlert(String title, String message) {
@@ -466,7 +460,7 @@ public class ParticipantController implements Initializable {
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Hello!");
+            stage.setTitle(name);
             stage.setScene(scene);
             stage.show();
             System.out.println(name + " is opened   ");
@@ -475,4 +469,60 @@ public class ParticipantController implements Initializable {
         }
 
     }
+
+
+
+
+
+
+
+
+    public void acceptRunner(String runnerEmail) {
+
+           // Get the email of the selected runner
+
+            try {
+                String subject = "Marathon Registration Confirmation";
+                String content = "Dear Runner,\n\n" +
+                        "We are pleased to inform you that your registration for the upcoming marathon has been confirmed.\n" +
+                        "Please make sure to arrive at the event venue on time and bring all the necessary equipment and documents.\n" +
+                        "If you have any further questions or require any assistance, please don't hesitate to contact us.\n\n" +
+                        "Best regards,\n" +
+                        "Marathon Team";
+
+                Properties properties = new Properties();
+                properties.put("mail.smtp.host", "smtp-relay.sendinblue.com");
+                properties.put("mail.smtp.port", 587);
+                properties.put("mail.smtp.auth", "true");
+
+                // Create a session with the SMTP server
+                Session session = Session.getInstance(properties, new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication("Rayenothmani@gmail.com", "VDUEdSYgA9svKj0O");
+                    }
+                });
+
+                // Create a new MimeMessage object
+                Message message = new MimeMessage(session);
+
+                // Set the sender address
+                message.setFrom(new InternetAddress("Rayenothmani@gmail.com"));
+
+                // Set the recipient address
+                message.setRecipient(Message.RecipientType.TO, new InternetAddress(runnerEmail));
+
+                // Set the email subject and content
+                message.setSubject(subject);
+                message.setText(content);
+
+                // Send the email
+                Transport.send(message);
+
+                System.out.println("Email sent successfully!");
+            } catch (MessagingException e) {
+                System.out.println("Failed to send email: " + e.getMessage());
+            }
+            System.out.println("Email sent successfully");
+        }
+
 }

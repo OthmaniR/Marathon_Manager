@@ -311,7 +311,7 @@ public class RunnerController {
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Hello!");
+            stage.setTitle(name);
             stage.setScene(scene);
             stage.show();
             System.out.println(name + " is opened   ");

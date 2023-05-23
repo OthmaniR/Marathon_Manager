@@ -62,6 +62,9 @@ public class DashboardController  implements Initializable {
     private Button insert_btn;
 
     @FXML
+    private Button rankingBtn;
+
+    @FXML
     private Button dashboard_btn;
 
     @FXML
@@ -130,16 +133,29 @@ public class DashboardController  implements Initializable {
     private void handleButtonAction(ActionEvent event) {
         if(event.getSource() == marathon_btn){
            showInterface("Marathon-view.fxml");
+           Stage stage = (Stage) marathon_btn.getScene().getWindow();
+              stage.close();
         }else if(event.getSource() == runner_btn){
            showInterface("Runner-view.fxml");
+           Stage stage = (Stage) runner_btn.getScene().getWindow();
+              stage.close();
         }else if(event.getSource() == sponsor_btn){
+              showInterface("Sponsor-view.fxml");
+              Stage stage = (Stage) sponsor_btn.getScene().getWindow();
+                stage.close();
 
         }else if(event.getSource() == participation_btn) {
           showInterface("Participation-view.fxml");
+          Stage stage = (Stage) participation_btn.getScene().getWindow();
+              stage.close();
         }else if(event.getSource() == chrono_btn) {
-
+            showInterface("Chrono-view.fxml");
+            Stage stage = (Stage) chrono_btn.getScene().getWindow();
+              stage.close();
         }else if(event.getSource() == dashboard_btn) {
              showInterface("Dashboard.fxml");
+             Stage stage = (Stage) dashboard_btn.getScene().getWindow();
+              stage.close();
         }
 
     }
@@ -156,7 +172,7 @@ public class DashboardController  implements Initializable {
             Scene scene = new Scene(root);
             Stage stage = new Stage();
             stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle("Hello!");
+            stage.setTitle(name);
             stage.setScene(scene);
             stage.show();
             System.out.println(name + " is opened   ");
@@ -291,6 +307,12 @@ public class DashboardController  implements Initializable {
         homeDisplayTotalEnrolledChart();
         homeDisplayMarathonChart();
         homeDisplaySponsorChart();
+        if(LoginviewController.role.equals("user")){
+        marathon_btn.setVisible(false);
+        participation_btn.setVisible(false);
+        sponsor_btn.setVisible(false);
+        chrono_btn.setVisible(false);
+        rankingBtn.setVisible(false);}
     }
     //ok
 }

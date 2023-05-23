@@ -28,11 +28,7 @@
     -fx-font-family:"Arial";
 
 }
-.textfield:focused{
-    -fx-background-color:#fff;
-    -fx-border-color:linear-gradient(to bottom right, #272b3f, #256b51);
-    -fx-border-width:.8px;
-}
+
 
 .login-btn{
     -fx-background-color:linear-gradient(to bottom, #274696, #3b2d64);
@@ -43,5 +39,5 @@
     -fx-cursor:hand;
 }
 .login-btn:hover{
-    -fx-background-color:linear-gradient(to bottom, #21a7ae,#368981);
+    -fx-background-color:linear-gradient(to bottom, #ae2121, #573689);
 }

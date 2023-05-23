@@ -127,6 +127,21 @@
                         </ImageView>
                     </graphic>
                 </Button>
+            <Button fx:id="rankingBtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="68.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="Ranking" textFill="WHITE">
+               <padding>
+                  <Insets left="50.0" />
+               </padding>
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Assets/icons8-rank-48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             </children>
         </VBox>
         <GridPane layoutX="240.0" layoutY="272.0" prefHeight="427.0" prefWidth="759.0">
@@ -185,10 +200,11 @@
             </HBox>
             <TableView fx:id="runnerTable" layoutX="10.0" layoutY="104.0" onMouseClicked="#getSelectedColu" prefHeight="356.0" prefWidth="756.0" stylesheets="@css/dashboardDesign.css" visible="false" GridPane.rowIndex="2">
                <columns>
-                  <TableColumn fx:id="marathonNameColumn1" prefWidth="161.60000610351562" text="Marathon Name" />
-                  <TableColumn fx:id="firstNameColumn1" prefWidth="197.5999755859375" text="Runner First Name" />
-                  <TableColumn fx:id="lastNameColu" prefWidth="240.0" text="Runner Last Name" />
-                  <TableColumn fx:id="ageColumn" prefWidth="156.79998779296875" text="Age" />
+                  <TableColumn fx:id="marathonNameColumn1" prefWidth="152.00003051757812" text="Marathon Name" />
+                  <TableColumn fx:id="firstNameColumn1" prefWidth="135.99993896484375" text="Runner First Name" />
+                  <TableColumn fx:id="lastNameColu" prefWidth="135.20001220703125" text="Runner Last Name" />
+                  <TableColumn fx:id="EmailColumn" minWidth="7.199951171875" prefWidth="160.0" text="Email" />
+                  <TableColumn fx:id="ageColumn" prefWidth="253.5999755859375" text="Age" />
                </columns>
             </TableView>
             <HBox fx:id="RunnerHbox" layoutX="10.0" layoutY="10.0" prefHeight="39.0" prefWidth="756.0">
@@ -282,6 +298,7 @@
                </padding>
             </Label>
             <TextField fx:id="ageFields" GridPane.columnIndex="3" />
+            <TextField fx:id="EmailText" promptText="Email" GridPane.columnIndex="3" GridPane.rowIndex="2" />
          </children>
       </GridPane>
     </children>

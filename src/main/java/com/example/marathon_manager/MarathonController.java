@@ -114,33 +114,33 @@ public class MarathonController {
         distanceColumn.setCellValueFactory(new PropertyValueFactory<>("distance"));
         WinnerColumn.setCellValueFactory(new PropertyValueFactory<>("winner"));
         // Set up data in the table
-       marathonTable.setItems(getMarathons());
+        marathonTable.setItems(getMarathons());
     }
-   public static ObservableList<Marathon> getMarathons() {
+    public static ObservableList<Marathon> getMarathons() {
 
         ObservableList<Marathon> marathons = FXCollections.observableArrayList();
 
-       marathons.clear();
-       try (
-               Connection con = Db_Connect.Connect_Db();
-               PreparedStatement stmt = con.prepareStatement("SELECT * FROM marathon");
-               ResultSet resultSet = stmt.executeQuery()
-       ) {
-           while (resultSet.next()) {
-               int marathonId = resultSet.getInt("marathon_id");
-               String name = resultSet.getString("name");
-               LocalDate date = resultSet.getDate("date").toLocalDate();
-               String startLocation = resultSet.getString("start_location");
-               String finishLocation = resultSet.getString("finish_location");
-               Double distance = resultSet.getDouble("distance");
-               String winner = resultSet.getString("Winner");
-               Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
-               marathons.add(marathon);
-           }
-       } catch (SQLException e) {
-           e.printStackTrace();
-           showAlert("Error", "Failed to load marathons from the database.");
-       }
+        marathons.clear();
+        try (
+                Connection con = Db_Connect.Connect_Db();
+                PreparedStatement stmt = con.prepareStatement("SELECT * FROM marathon");
+                ResultSet resultSet = stmt.executeQuery()
+        ) {
+            while (resultSet.next()) {
+                int marathonId = resultSet.getInt("marathon_id");
+                String name = resultSet.getString("name");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                String startLocation = resultSet.getString("start_location");
+                String finishLocation = resultSet.getString("finish_location");
+                Double distance = resultSet.getDouble("distance");
+                String winner = resultSet.getString("Winner");
+                Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
+                marathons.add(marathon);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load marathons from the database.");
+        }
 
         return marathons;
     }
@@ -215,7 +215,7 @@ public class MarathonController {
             Logger logger = Logger.getLogger(getClass().getName());
             logger.log(Level.SEVERE, "Failed to create new Window.", e);
         }
-        }
+    }
 
 
     @FXML
@@ -238,18 +238,18 @@ public class MarathonController {
                 PreparedStatement statement = conn.prepareStatement(
                         "INSERT INTO marathon (name, date, start_location, finish_location, distance) " +
                                 "VALUES (?, ?, ?, ?, ?)");
-            //statement.setInt(1, marathonId);
-            statement.setString(1, name);
-            statement.setDate(2, Date.valueOf(date));
-            statement.setString(3, startLocation);
-            statement.setString(4, finishLocation);
-            statement.setDouble(5, distance);
-            statement.executeUpdate();
-               clearFields();
+                //statement.setInt(1, marathonId);
+                statement.setString(1, name);
+                statement.setDate(2, Date.valueOf(date));
+                statement.setString(3, startLocation);
+                statement.setString(4, finishLocation);
+                statement.setDouble(5, distance);
+                statement.executeUpdate();
+                clearFields();
                 initialize_Marathon();
                 //clearForm();
-          //  initialize_Marathon(); // Refresh the table view
-        }} catch (SQLException e) {
+                //  initialize_Marathon(); // Refresh the table view
+            }} catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to insert the marathon into the database.");
 
@@ -279,7 +279,7 @@ public class MarathonController {
             showAlert("Error", "Failed to update marathon"+ e.getMessage());
         }
     }
-@FXML
+    @FXML
     public void deleteMarathon(ActionEvent actionEvent) {
         try (Connection con = Db_Connect.Connect_Db();
              PreparedStatement stmt = con.prepareStatement("DELETE FROM marathon WHERE marathon_id = ?")) {
@@ -366,4 +366,3 @@ public class MarathonController {
 
 
 }
-

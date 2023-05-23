@@ -18,7 +18,9 @@ public class Participation {
 
     private final StringProperty payment_status;
 
-    public Participation(int participation_id, int marathon_id, String marathonName,  int runner_id, String first_name, String last_name, LocalDate registration_date,  String payment_status) {
+    private final StringProperty email;
+
+    public Participation(int participation_id, int marathon_id, String marathonName, int runner_id, String first_name, String last_name, LocalDate registration_date, String payment_status, String email) {
         this.participation_id = new SimpleIntegerProperty(participation_id);
         this.last_name = new SimpleStringProperty(last_name);
         this.first_name = new SimpleStringProperty(first_name);
@@ -27,9 +29,10 @@ public class Participation {
         this.runner_id = new SimpleIntegerProperty(runner_id);
         this.Registration_date = new SimpleObjectProperty<>(registration_date);
         this.payment_status = new SimpleStringProperty(payment_status);
+        this.email = new SimpleStringProperty(email);
     }
 
-    public Participation(IntegerProperty participation_id, int marathon_id, String marathonName, int runner_id, StringProperty first_name, StringProperty last_name, LocalDate registration_date, String payment_status) {
+    public Participation(IntegerProperty participation_id, int marathon_id, String marathonName, int runner_id, StringProperty first_name, StringProperty last_name, LocalDate registration_date, String payment_status, StringProperty email) {
         this.participation_id = participation_id;
         this.marathon_id = new SimpleIntegerProperty(marathon_id);
         this.MarathonName = new SimpleStringProperty(marathonName);
@@ -38,9 +41,25 @@ public class Participation {
         this.last_name = last_name;
         this.Registration_date = new SimpleObjectProperty<>(registration_date);
         this.payment_status = new SimpleStringProperty(payment_status);
+        this.email = email;
     }
 
 
+    public String getPayment_status() {
+        return payment_status.get();
+    }
+
+    public String getEmail() {
+        return email.get();
+    }
+
+    public StringProperty emailProperty() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email.set(email);
+    }
 
     public int getParticipation_id() {
         return participation_id.get();

@@ -1,7 +1,7 @@
 module com.example.marathon_manager {
     requires javafx.controls;
     requires javafx.fxml;
-
+    requires java.mail;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
 
@@ -9,4 +9,5 @@ module com.example.marathon_manager {
     exports com.example.marathon_manager;
 
     opens Model to javafx.base;
+
 }
