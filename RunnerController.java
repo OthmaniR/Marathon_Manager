@@ -166,7 +166,7 @@ public class RunnerController {
             lbl_status.setText("Participation");
             lbl_status_mini.setText("Participation");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Participant.fxml");
+            showInterface("Participation-view.fxml");
             Stage stage = (Stage) participation_btn.getScene().getWindow();
             stage.close();
         } else if (event.getSource() == chrono_btn) {

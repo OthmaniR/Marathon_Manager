@@ -155,21 +155,29 @@ public class MarathonController {
             lbl_status_mini.setText("Marathon");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Dashboard.fxml");
+            Stage stage = (Stage) marathon_btn.getScene().getWindow();
+            // do what you have to do
+            stage.close();
         }else if(event.getSource() == runner_btn){
             lbl_status.setText("Runner");
             lbl_status_mini.setText("Runner");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Runner-view.fxml");
+            Stage stage = (Stage) runner_btn.getScene().getWindow();
+            // do what you have to do
+            stage.close();
         }else if(event.getSource() == sponsor_btn){
             lbl_status.setText("Sponsor");
             lbl_status_mini.setText("Sponsor");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            Stage stage = (Stage) sponsor_btn.getScene().getWindow();
 
+            stage.close();
         }else if(event.getSource() == participation_btn) {
             lbl_status.setText("Participation");
             lbl_status_mini.setText("Participation");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Participant.fxml");
+            showInterface("Participation-view.fxml");
             Stage stage = (Stage) participation_btn.getScene().getWindow();
             // do what you have to do
             stage.close();
@@ -177,12 +185,17 @@ public class MarathonController {
             lbl_status.setText("Chrono");
             lbl_status_mini.setText("Chrono");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            Stage stage = (Stage) chrono_btn.getScene().getWindow();
 
+            stage.close();
         }else if(event.getSource() == dashboard_btn) {
             lbl_status.setText("Dashboard");
             lbl_status_mini.setText("Dashboard");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Dashboard.fxml");
+            Stage stage = (Stage) dashboard_btn.getScene().getWindow();
+            // do what you have to do
+            stage.close();
         }
 
     }

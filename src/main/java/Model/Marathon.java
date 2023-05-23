@@ -2,6 +2,7 @@ package Model;
 
 
 import javafx.beans.property.*;
+import javafx.collections.ObservableList;
 
 import java.time.LocalDate;
 
@@ -35,6 +36,9 @@ public class Marathon {
         this.distance = new SimpleDoubleProperty(distance);
         this.Winner = new SimpleStringProperty(winner);
     }
+
+
+
 
     public int getMarathonId() {
         return marathonId.get();

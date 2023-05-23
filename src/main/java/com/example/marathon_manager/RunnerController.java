@@ -134,18 +134,21 @@ public class RunnerController {
         runnerTable.setItems(getRunners());
     }
 
-    public static ObservableList<Runner> getRunners() {
+    public  ObservableList<Runner> getRunners() {
+
         ObservableList<Runner> runners = FXCollections.observableArrayList();
 
         runners.clear();
         try (
                 Connection con = Db_Connect.Connect_Db();
-                PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner");
+                PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner WHERE marathon_id = ? ");
                 PreparedStatement stmt2 = con.prepareStatement("SELECT name FROM marathon WHERE marathon_id = ?");
-                ResultSet resultSet = stmt.executeQuery();
+
 
 
         ) {
+            stmt.setInt(1,getidMarathon());
+            ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 System.out.println("Runner table loaded.");
                 int runnerId = resultSet.getInt("runner_id");
@@ -181,31 +184,43 @@ public class RunnerController {
             lbl_status_mini.setText("Marathon");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Marathon-view.fxml");
+            Stage stage = (Stage) marathon_btn.getScene().getWindow();
+            stage.close();
         } else if (event.getSource() == runner_btn) {
             lbl_status.setText("Runner");
             lbl_status_mini.setText("Runner");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Runner-view.fxml");
+            Stage stage = (Stage) runner_btn.getScene().getWindow();
+            stage.close();
         } else if (event.getSource() == sponsor_btn) {
             lbl_status.setText("Sponsor");
             lbl_status_mini.setText("Sponsor");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            showInterface("Sponsor-view.fxml");
+            Stage stage = (Stage) sponsor_btn.getScene().getWindow();
+            stage.close();
         } else if (event.getSource() == participation_btn) {
             lbl_status.setText("Participation");
             lbl_status_mini.setText("Participation");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Participant.fxml");
+            showInterface("Participation-view.fxml");
             Stage stage = (Stage) participation_btn.getScene().getWindow();
             stage.close();
         } else if (event.getSource() == chrono_btn) {
             lbl_status.setText("Chrono");
             lbl_status_mini.setText("Chrono");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            showInterface("Chrono-view.fxml");
+            Stage stage = (Stage) chrono_btn.getScene().getWindow();
+            stage.close();
         } else if (event.getSource() == dashboard_btn) {
             lbl_status.setText("Dashboard");
             lbl_status_mini.setText("Dashboard");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Dashboard.fxml");
+            Stage stage = (Stage) dashboard_btn.getScene().getWindow();
+            stage.close();
         }
     }
 
@@ -247,8 +262,8 @@ public class RunnerController {
             }
             if (con != null) {
                 PreparedStatement statement = con.prepareStatement(
-                        "INSERT INTO runner (first_name, age, phone_number, gender, email,marathon_id,last_name) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?)");
+                        "INSERT INTO runner (first_name, age, phone_number, gender, email,marathon_id,last_name,Payment_status) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ? , 'Not paid')");
                 statement.setString(1, name);
                 statement.setInt(2, age);
                 statement.setString(3, phone);

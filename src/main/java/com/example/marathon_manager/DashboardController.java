@@ -7,9 +7,14 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Background;
@@ -21,14 +26,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.net.URL;
+import java.sql.*;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 
-public class DashboardController {
+public class DashboardController  implements Initializable {
     @FXML
     private Button chrono_btn;
 
@@ -97,78 +100,46 @@ public class DashboardController {
     private TableColumn<Marathon, String> distanceColumn;
 
 
-    public void initialize_Marathon() {
-        // Set up table columns
-        marathonIdColumn.setCellValueFactory(new PropertyValueFactory<>("marathonId"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
-        startLocationColumn.setCellValueFactory(new PropertyValueFactory<>("startLocation"));
-        finishLocationColumn.setCellValueFactory(new PropertyValueFactory<>("finishLocation"));
-        distanceColumn.setCellValueFactory(new PropertyValueFactory<>("distance"));
+    @FXML
+    private Label totalEnrolledTxt;
 
-        // Set up data in the table
-     //   marathonTable.setItems(getMarathons());
+    @FXML
+    private Label totalMarathonTxt;
+
+    @FXML
+    private Label totalSponsorTxt;
+
+    @FXML
+    private BarChart<?, ?> totalenrolledchart;
+
+    @FXML
+    private LineChart<?, ?> totalmarathonchart;
+
+    @FXML
+    private AreaChart<?, ?> totalsponsorchart;
+
+    @FXML
+    void CloseAction(ActionEvent event) {
+
     }
-  /*  public static ObservableList<Marathon> getMarathons() {
-        ObservableList<Marathon> marathons = FXCollections.observableArrayList();
 
-        try (
-                Connection con = Db_Connect.Connect_Db();
-                Statement stmt = con.createStatement();
-                ResultSet resultSet = stmt.executeQuery("SELECT * FROM marathon")) {
 
-            while (resultSet.next()) {
-                int marathonId = resultSet.getInt("marathon_id");
-                String name = resultSet.getString("name");
-                Date date = Date.valueOf(resultSet.getString("date"));
-                String startLocation = resultSet.getString("start_location");
-                String finishLocation = resultSet.getString("finish_location");
-                String distance = resultSet.getString("distance");
-                String dateString = date.toString();
-                Marathon marathon = new Marathon(marathonId, name, dateString, startLocation, finishLocation, distance);
-                marathons.add(marathon);
-            }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return marathons;
-    }
-*/
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
         if(event.getSource() == marathon_btn){
-            lbl_status.setText("Marathon");
-            lbl_status_mini.setText("Marathon");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Marathon-view.fxml");
+           showInterface("Marathon-view.fxml");
         }else if(event.getSource() == runner_btn){
-            lbl_status.setText("Runner");
-            lbl_status_mini.setText("Runner");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Runner-view.fxml");
+           showInterface("Runner-view.fxml");
         }else if(event.getSource() == sponsor_btn){
-            lbl_status.setText("Sponsor");
-            lbl_status_mini.setText("Sponsor");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
 
         }else if(event.getSource() == participation_btn) {
-            lbl_status.setText("Participation");
-            lbl_status_mini.setText("Participation");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Participant.fxml");
+          showInterface("Participation-view.fxml");
         }else if(event.getSource() == chrono_btn) {
-            lbl_status.setText("Chrono");
-            lbl_status_mini.setText("Chrono");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
 
         }else if(event.getSource() == dashboard_btn) {
-            lbl_status.setText("Dashboard");
-            lbl_status_mini.setText("Dashboard");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Dashboard.fxml");
+             showInterface("Dashboard.fxml");
         }
 
     }
@@ -197,4 +168,129 @@ public class DashboardController {
     private void dashboard_close() {
         System.exit(0);
     }
+
+    public void homeDisplayTotalEnrolledRunners() {
+        Connection con = Db_Connect.Connect_Db();
+
+
+        int countEnrolled = 0;
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM runner ");
+                ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                countEnrolled = result.getInt("COUNT(*)");
+            }
+
+            totalEnrolledTxt.setText(String.valueOf(countEnrolled));
+        } catch (Exception var4) {
+            var4.printStackTrace();
+        }
+
+    }
+
+    public void homeDisplayTotalMarathons() {
+        Connection con = Db_Connect.Connect_Db();
+
+
+        int countEnrolled = 0;
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM marathon ");
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                countEnrolled = result.getInt("COUNT(*)");
+            }
+
+            totalMarathonTxt.setText(String.valueOf(countEnrolled));
+        } catch (Exception var4) {
+            var4.printStackTrace();
+        }
+    }
+    public void homeDisplayTotalSponsors() {
+        Connection con = Db_Connect.Connect_Db();
+
+
+        int countEnrolled = 0;
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM sponsor ");
+            ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                countEnrolled = result.getInt("COUNT(*)");
+            }
+
+            totalSponsorTxt.setText(String.valueOf(countEnrolled));
+        } catch (Exception var4) {
+            var4.printStackTrace();
+        }
+    }
+
+    public void homeDisplayTotalEnrolledChart() {
+        Connection con = Db_Connect.Connect_Db();
+        totalenrolledchart.getData().clear();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT age, COUNT(*) FROM runner  GROUP BY age ORDER BY TIMESTAMP(age) ASC LIMIT 5");
+                    ResultSet result = stmt.executeQuery();
+            XYChart.Series chart = new XYChart.Series();
+            while(result.next()) {
+                chart.getData().add(new XYChart.Data(result.getString(1), result.getInt(2)));
+            }
+
+            totalenrolledchart.getData().add(chart);
+            System.out.println("Chart is displayed");
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+    public void homeDisplayMarathonChart() {
+        Connection con = Db_Connect.Connect_Db();
+        totalmarathonchart.getData().clear();
+
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT date, COUNT(*) FROM marathon  GROUP BY date ORDER BY TIMESTAMP(date) ASC LIMIT 5");
+            ResultSet result = stmt.executeQuery();
+            XYChart.Series chart = new XYChart.Series();
+
+            while(result.next()) {
+                chart.getData().add(new XYChart.Data(result.getString(1), result.getInt(2)));
+            }
+
+            totalmarathonchart.getData().add(chart);
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    public void homeDisplaySponsorChart() {
+        Connection con = Db_Connect.Connect_Db();
+        totalsponsorchart.getData().clear();
+        try {
+            PreparedStatement stmt = con.prepareStatement("SELECT sponsorship_amount, COUNT(*) FROM sponsor  GROUP BY sponsorship_amount ORDER BY sponsorship_amount ASC ");
+            ResultSet result = stmt.executeQuery();
+            XYChart.Series chart = new XYChart.Series();
+            while(result.next()) {
+                chart.getData().add(new XYChart.Data(result.getString(1), result.getInt(2)));
+            }
+
+            totalsponsorchart.getData().add(chart);
+        } catch (Exception var3) {
+            var3.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        homeDisplayTotalEnrolledRunners();
+        homeDisplayTotalMarathons();
+        homeDisplayTotalSponsors();
+        homeDisplayTotalEnrolledChart();
+        homeDisplayMarathonChart();
+        homeDisplaySponsorChart();
+    }
+    //ok
 }

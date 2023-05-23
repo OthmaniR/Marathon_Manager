@@ -6,32 +6,40 @@ import java.time.LocalDate;
 
 public class Participation {
     private final IntegerProperty participation_id;
-    private final StringProperty marathon_id;
-    private final StringProperty runner_id;
+    private final IntegerProperty marathon_id;
+
+    private final StringProperty MarathonName;
+    private final IntegerProperty runner_id;
+
+    private final StringProperty first_name;
+
+    private final StringProperty last_name;
     private final ObjectProperty<LocalDate>  Registration_date;
-    private final BooleanProperty isConfirmed;
-    private final BooleanProperty isAbandoned;
-    private final BooleanProperty payment_status;
 
-    public Participation(int participation_id, String marathon_id, String runner_id, LocalDate registration_date, boolean isConfirmed, boolean isAbandoned, boolean payment_status) {
+    private final StringProperty payment_status;
+
+    public Participation(int participation_id, int marathon_id, String marathonName,  int runner_id, String first_name, String last_name, LocalDate registration_date,  String payment_status) {
         this.participation_id = new SimpleIntegerProperty(participation_id);
-        this.marathon_id = new SimpleStringProperty(marathon_id);
-        this.runner_id = new SimpleStringProperty(runner_id);
+        this.last_name = new SimpleStringProperty(last_name);
+        this.first_name = new SimpleStringProperty(first_name);
+        this.MarathonName = new SimpleStringProperty(marathonName);
+        this.marathon_id = new SimpleIntegerProperty(marathon_id);
+        this.runner_id = new SimpleIntegerProperty(runner_id);
         this.Registration_date = new SimpleObjectProperty<>(registration_date);
-        this.isConfirmed = new SimpleBooleanProperty(isConfirmed);
-        this.isAbandoned = new SimpleBooleanProperty(isAbandoned);
-        this.payment_status = new SimpleBooleanProperty(payment_status);
+        this.payment_status = new SimpleStringProperty(payment_status);
     }
 
-    public Participation(IntegerProperty participation_id, String marathon_id, String runner_id, LocalDate registration_date, boolean isConfirmed, boolean isAbandoned, boolean payment_status) {
+    public Participation(IntegerProperty participation_id, int marathon_id, String marathonName, int runner_id, StringProperty first_name, StringProperty last_name, LocalDate registration_date, String payment_status) {
         this.participation_id = participation_id;
-        this.marathon_id = new SimpleStringProperty(marathon_id);
-        this.runner_id = new SimpleStringProperty(runner_id);
+        this.marathon_id = new SimpleIntegerProperty(marathon_id);
+        this.MarathonName = new SimpleStringProperty(marathonName);
+        this.runner_id = new SimpleIntegerProperty(runner_id);
+        this.first_name = first_name;
+        this.last_name = last_name;
         this.Registration_date = new SimpleObjectProperty<>(registration_date);
-        this.isConfirmed = new SimpleBooleanProperty(isConfirmed);
-        this.isAbandoned = new SimpleBooleanProperty(isAbandoned);
-        this.payment_status = new SimpleBooleanProperty(payment_status);
+        this.payment_status = new SimpleStringProperty(payment_status);
     }
+
 
 
     public int getParticipation_id() {
@@ -46,28 +54,64 @@ public class Participation {
         this.participation_id.set(participation_id);
     }
 
-    public String getMarathon_id() {
+    public int getMarathon_id() {
         return marathon_id.get();
     }
 
-    public StringProperty marathon_idProperty() {
+    public IntegerProperty marathon_idProperty() {
         return marathon_id;
     }
 
-    public void setMarathon_id(String marathon_id) {
+    public void setMarathon_id(int marathon_id) {
         this.marathon_id.set(marathon_id);
     }
 
-    public String getRunner_id() {
+    public String getMarathonName() {
+        return MarathonName.get();
+    }
+
+    public StringProperty marathonNameProperty() {
+        return MarathonName;
+    }
+
+    public void setMarathonName(String marathonName) {
+        this.MarathonName.set(marathonName);
+    }
+
+    public int getRunner_id() {
         return runner_id.get();
     }
 
-    public StringProperty runner_idProperty() {
+    public IntegerProperty runner_idProperty() {
         return runner_id;
     }
 
-    public void setRunner_id(String runner_id) {
+    public void setRunner_id(int runner_id) {
         this.runner_id.set(runner_id);
+    }
+
+    public String getFirst_name() {
+        return first_name.get();
+    }
+
+    public StringProperty first_nameProperty() {
+        return first_name;
+    }
+
+    public void setFirst_name(String first_name) {
+        this.first_name.set(first_name);
+    }
+
+    public String getLast_name() {
+        return last_name.get();
+    }
+
+    public StringProperty last_nameProperty() {
+        return last_name;
+    }
+
+    public void setLast_name(String last_name) {
+        this.last_name.set(last_name);
     }
 
     public LocalDate getRegistration_date() {
@@ -82,39 +126,15 @@ public class Participation {
         this.Registration_date.set(registration_date);
     }
 
-    public boolean isIsConfirmed() {
-        return isConfirmed.get();
-    }
-
-    public BooleanProperty isConfirmedProperty() {
-        return isConfirmed;
-    }
-
-    public void setIsConfirmed(boolean isConfirmed) {
-        this.isConfirmed.set(isConfirmed);
-    }
-
-    public boolean isIsAbandoned() {
-        return isAbandoned.get();
-    }
-
-    public BooleanProperty isAbandonedProperty() {
-        return isAbandoned;
-    }
-
-    public void setIsAbandoned(boolean isAbandoned) {
-        this.isAbandoned.set(isAbandoned);
-    }
-
-    public boolean isPayment_status() {
+    public String isPayment_status() {
         return payment_status.get();
     }
 
-    public BooleanProperty payment_statusProperty() {
+    public StringProperty payment_statusProperty() {
         return payment_status;
     }
 
-    public void setPayment_status(boolean payment_status) {
+    public void setPayment_status(String payment_status) {
         this.payment_status.set(payment_status);
     }
 }
