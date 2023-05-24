@@ -68,7 +68,7 @@ public class DashboardController  implements Initializable {
     private Button dashboard_btn;
 
     @FXML
-    private Button test_btn;
+    private Button close;
 
     @FXML
     private TextField marathon_id_text;
@@ -138,7 +138,7 @@ public class DashboardController  implements Initializable {
         }else if(event.getSource() == runner_btn){
            showInterface("Runner-view.fxml");
            Stage stage = (Stage) runner_btn.getScene().getWindow();
-              stage.close();
+            //  stage.close();
         }else if(event.getSource() == sponsor_btn){
               showInterface("Sponsor-view.fxml");
               Stage stage = (Stage) sponsor_btn.getScene().getWindow();
@@ -156,7 +156,10 @@ public class DashboardController  implements Initializable {
              showInterface("Dashboard.fxml");
              Stage stage = (Stage) dashboard_btn.getScene().getWindow();
               stage.close();
-        }
+        }else if(event.getSource() == rankingBtn) {
+            showInterface("Ranking-view.fxml");
+            Stage stage = (Stage) rankingBtn.getScene().getWindow();
+              stage.close();}
 
     }
     @FXML
@@ -182,7 +185,8 @@ public class DashboardController  implements Initializable {
     }
     @FXML
     private void dashboard_close() {
-        System.exit(0);
+        Stage stage = (Stage) close.getScene().getWindow();
+        stage.close();
     }
 
     public void homeDisplayTotalEnrolledRunners() {
@@ -192,10 +196,10 @@ public class DashboardController  implements Initializable {
         int countEnrolled = 0;
 
         try {
-            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM runner ");
+            PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) as number FROM runner ");
                 ResultSet result = stmt.executeQuery();
             if (result.next()) {
-                countEnrolled = result.getInt("COUNT(*)");
+                countEnrolled = result.getInt("number");
             }
 
             totalEnrolledTxt.setText(String.valueOf(countEnrolled));
@@ -307,12 +311,21 @@ public class DashboardController  implements Initializable {
         homeDisplayTotalEnrolledChart();
         homeDisplayMarathonChart();
         homeDisplaySponsorChart();
-        if(LoginviewController.role.equals("user")){
+       if(LoginviewController.role.equals("user")){
         marathon_btn.setVisible(false);
         participation_btn.setVisible(false);
         sponsor_btn.setVisible(false);
         chrono_btn.setVisible(false);
-        rankingBtn.setVisible(false);}
+        rankingBtn.setVisible(false);
+       }else if(LoginviewController.role.equals("chrono")) {
+           marathon_btn.setVisible(false);
+           participation_btn.setVisible(false);
+           sponsor_btn.setVisible(false);
+           chrono_btn.setVisible(false);
+           rankingBtn.setVisible(true);
+           runner_btn.setVisible(false);
+
+       }
     }
     //ok
 }

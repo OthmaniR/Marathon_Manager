@@ -2,11 +2,18 @@ package com.example.marathon_manager;
 
 import Model.Db_Connect;
 import Model.Marathon;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -22,12 +29,14 @@ import javafx.stage.StageStyle;
 import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MarathonController {
+public class MarathonController implements Initializable {
     @FXML
     private Button chrono_btn;
 
@@ -92,7 +101,7 @@ public class MarathonController {
     @FXML
     private TableColumn<Marathon, String> nameColumn;
     @FXML
-    private TableColumn<Marathon, Date> dateColumn;
+    private TableColumn<Marathon, LocalDate> dateColumn;
     @FXML
     private TableColumn<Marathon, String> startLocationColumn;
     @FXML
@@ -101,11 +110,15 @@ public class MarathonController {
     private TableColumn<Marathon, Double> distanceColumn;
 
     @FXML
-    private TableColumn<Marathon, Double> WinnerColumn;
+    private TableColumn<Marathon, String> WinnerColumn;
+
+    @FXML
+    private TextField filterTable;
 
 
     public void initialize_Marathon() {
         // Set up table columns
+
         marathonIdColumn.setCellValueFactory(new PropertyValueFactory<>("marathonId"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -116,7 +129,12 @@ public class MarathonController {
         // Set up data in the table
         marathonTable.setItems(getMarathons());
     }
-    public static ObservableList<Marathon> getMarathons() {
+
+
+
+
+
+    public  ObservableList<Marathon> getMarathons() {
 
         ObservableList<Marathon> marathons = FXCollections.observableArrayList();
 
@@ -136,6 +154,49 @@ public class MarathonController {
                 String winner = resultSet.getString("Winner");
                 Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
                 marathons.add(marathon);
+
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load marathons from the database.");
+        }
+
+        return marathons;
+    }
+
+    public  ObservableList<Marathon> getSearchMarathons() {
+        String search = filterTable.getText();
+        ObservableList<Marathon> marathons = FXCollections.observableArrayList();
+
+        marathons.clear();
+        try (
+                Connection con = Db_Connect.Connect_Db();
+                PreparedStatement stmt = con.prepareStatement("SELECT * FROM marathon where name like ? or start_location like ? or finish_location like ? or distance like ? or Winner like ?");
+
+        ) {
+            stmt.setString(1, "%" + search + "%");
+            stmt.setString(2, "%" + search + "%");
+            stmt.setString(3, "%" + search + "%");
+            stmt.setString(4, "%" + search + "%");
+            stmt.setString(5, "%" + search + "%");
+
+
+
+            ResultSet resultSet = stmt.executeQuery();
+            marathonTable.getItems().clear();
+
+            while (resultSet.next()) {
+                int marathonId = resultSet.getInt("marathon_id");
+                String name = resultSet.getString("name");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                String startLocation = resultSet.getString("start_location");
+                String finishLocation = resultSet.getString("finish_location");
+                Double distance = resultSet.getDouble("distance");
+                String winner = resultSet.getString("Winner");
+                Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
+                marathons.add(marathon);
+                initialize_Marathon();
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,29 +208,28 @@ public class MarathonController {
 
 
 
-
     @FXML
     private void handleButtonAction(ActionEvent event) throws Exception {
         if(event.getSource() == marathon_btn){
             lbl_status.setText("Marathon");
             lbl_status_mini.setText("Marathon");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Dashboard.fxml");
+            showInterface("Marathon-view.fxml");
             Stage stage = (Stage) marathon_btn.getScene().getWindow();
             // do what you have to do
             stage.close();
         }else if(event.getSource() == runner_btn){
-            lbl_status.setText("Runner");
-            lbl_status_mini.setText("Runner");
+            System.out.println("Runner");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Runner-view.fxml");
-            Stage stage = (Stage) runner_btn.getScene().getWindow();
+           // Stage stage = (Stage) runner_btn.getScene().getWindow();
             // do what you have to do
-            stage.close();
+           // stage.close();
         }else if(event.getSource() == sponsor_btn){
             lbl_status.setText("Sponsor");
             lbl_status_mini.setText("Sponsor");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            showInterface("Sponsor-view.fxml");
             Stage stage = (Stage) sponsor_btn.getScene().getWindow();
 
             stage.close();
@@ -185,6 +245,7 @@ public class MarathonController {
             lbl_status.setText("Chrono");
             lbl_status_mini.setText("Chrono");
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
+            showInterface("Chrono-view.fxml");
             Stage stage = (Stage) chrono_btn.getScene().getWindow();
 
             stage.close();
@@ -220,7 +281,7 @@ public class MarathonController {
 
     @FXML
     private void insert_marathon() {
-
+        if(areFieldsEmpty()){
         LocalDate selectedDate = datePicker.getValue();
         java.sql.Date sqlDate = java.sql.Date.valueOf(selectedDate);
         String dateString = sqlDate.toString();
@@ -252,10 +313,13 @@ public class MarathonController {
             }} catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to insert the marathon into the database.");
-
+            insert_btn.setVisible(false);
+            addnewBtn.setVisible(true);
         }
-        insert_btn.setVisible(false);
-        addnewBtn.setVisible(true);
+        }else{
+            showAlert("Error", "Please fill all the fields.");
+        }
+
     }
 
     @FXML
@@ -337,7 +401,7 @@ public class MarathonController {
         }
         marathon_id_text.setText(marathonIdColumn.getCellData(index).toString());
         name_text.setText(nameColumn.getCellData(index).toString());
-        datePicker.setValue(dateColumn.getCellData(index).toLocalDate());
+        datePicker.setValue(dateColumn.getCellData(index));
         start_location_text.setText(startLocationColumn.getCellData(index).toString());
         finish_location_text.setText(finishLocationColumn.getCellData(index).toString());
         distance_text.setText(distanceColumn.getCellData(index).toString());
@@ -364,5 +428,47 @@ public class MarathonController {
     }
 
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        initialize_Marathon();
+    }
 
+    @FXML
+    public void search() {
+        String searchQuery = "SELECT * FROM marathon WHERE name LIKE '%" + filterTable.getText() + "%'";
+        try {
+            Connection con = Db_Connect.Connect_Db();
+            PreparedStatement statement = con.prepareStatement(searchQuery);
+            ResultSet resultSet = statement.executeQuery();
+            marathonTable.getItems().clear();
+            while (resultSet.next()) {
+                int marathonId = resultSet.getInt("marathon_id");
+                String name = resultSet.getString("name");
+                LocalDate date = resultSet.getDate("date").toLocalDate();
+                String startLocation = resultSet.getString("start_location");
+                String finishLocation = resultSet.getString("finish_location");
+                Double distance = resultSet.getDouble("distance");
+                String winner = resultSet.getString("Winner");
+                Marathon marathon = new Marathon(marathonId, name, date, startLocation, finishLocation, distance, winner);
+                marathonTable.getItems().add(marathon);
+                initialize_Marathon();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean areFieldsEmpty() {
+        System.out.println("areFieldsEmpty");
+        LocalDate selectedDate = datePicker.getValue();
+        String name = name_text.getText();
+        String startLocation = start_location_text.getText();
+        String finishLocation = finish_location_text.getText();
+        String distanceStr = distance_text.getText();
+
+        if( selectedDate == null || name.isEmpty() || startLocation.isEmpty() || finishLocation.isEmpty() || distanceStr.isEmpty()){
+            return false;
+        }
+        return true;
+    }
 }

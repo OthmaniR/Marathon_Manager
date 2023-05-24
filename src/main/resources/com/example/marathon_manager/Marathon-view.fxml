@@ -125,6 +125,21 @@
                         </ImageView>
                     </graphic>
                 </Button>
+            <Button fx:id="rankingBtn" alignment="BASELINE_LEFT" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="68.0" prefWidth="254.0" stylesheets="@fullpackstyling.css" text="Ranking" textFill="WHITE">
+               <padding>
+                  <Insets left="50.0" />
+               </padding>
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="29.0" fitWidth="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Assets/icons8-rank-48.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             </children>
         </VBox>
         <GridPane layoutX="240.0" layoutY="267.0" prefHeight="406.0" prefWidth="759.0">
@@ -139,9 +154,13 @@
             <children>
                 <HBox prefHeight="42.0" prefWidth="756.0" GridPane.rowIndex="1">
                     <children>
-                        <FontAwesomeIcon glyphName="SEARCH" size="1.5em" wrappingWidth="16.000015258789062" />
-                        <TextField prefHeight="26.0" prefWidth="681.0" />
-                        <Button fx:id="test_btn" mnemonicParsing="false" onAction="#open_test" prefHeight="26.0" prefWidth="76.0" stylesheets="@fullpackstyling.css" text="Button" textFill="WHITE" />
+                  <ImageView fitHeight="33.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@Assets/icons8-search-48.png" />
+                     </image>
+                  </ImageView>
+                        <TextField fx:id="filterTable" prefHeight="34.0" prefWidth="656.0" promptText="Search" />
+                  <Button mnemonicParsing="false" onAction="#search" text="Button" />
                     </children>
                 </HBox>
                 <HBox prefHeight="46.0" prefWidth="756.0">
@@ -169,7 +188,7 @@
                         </Button>
                     </children>
                 </HBox>
-                <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+                <TableView fx:id="marathonTable" onMouseClicked="#getSelected" prefHeight="200.0" prefWidth="200.0" stylesheets="@css/dashboardDesign.css" GridPane.rowIndex="2">
                     <columns>
                         <TableColumn fx:id="marathonIdColumn" prefWidth="78.4000244140625" text="Marathon_id" />
                         <TableColumn fx:id="nameColumn" prefWidth="87.20001220703125" text="Name" />

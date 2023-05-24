@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -158,6 +159,9 @@ public class ParticipantController implements Initializable {
     private TextField EmailText;
 
     @FXML
+    private Button DeclineBtn;
+
+    @FXML
     private void handleButtonAction(ActionEvent event) throws Exception {
         if (event.getSource() == marathon_btn) {
             lbl_status.setText("Marathon");
@@ -165,10 +169,7 @@ public class ParticipantController implements Initializable {
             pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
             showInterface("Marathon-view.fxml");
         } else if (event.getSource() == runner_btn) {
-            lbl_status.setText("Runner");
-            lbl_status_mini.setText("Runner");
-            pnl_status.setBackground(new Background(new BackgroundFill(Color.rgb(29, 38, 125), CornerRadii.EMPTY, Insets.EMPTY)));
-            showInterface("Runner-view.fxml");
+           showInterface("Runner-view.fxml");
         } else if (event.getSource() == sponsor_btn) {
             lbl_status.setText("Sponsor");
             lbl_status_mini.setText("Sponsor");
@@ -220,6 +221,7 @@ public class ParticipantController implements Initializable {
         registerLbl.setVisible(true);
         registerDatepicker.setVisible(true);
         Payed_CheckBox.setVisible(true);
+        DeclineBtn.setVisible(true);
         marathonNameColumn1.setCellValueFactory(new PropertyValueFactory<>("MarathonName"));
         firstNameColumn1.setCellValueFactory(new PropertyValueFactory<>("name"));
         lastNameColu.setCellValueFactory(new PropertyValueFactory<>("last_name"));
@@ -300,14 +302,15 @@ public class ParticipantController implements Initializable {
                 Connection con = Db_Connect.Connect_Db();
                 //PreparedStatement stmt = con.prepareStatement("SELECT * FROM participation where marathon_id = ?");
                 PreparedStatement stmt1 = con.prepareStatement("SELECT * FROM marathon WHERE marathon_id = ?");
-                PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner WHERE Payment_status = ?");
+                PreparedStatement stmt = con.prepareStatement("SELECT * FROM runner WHERE marathon_id = ? AND Payment_status = ? ");
 
 
 
         ) {
 
             System.out.println(id);
-            stmt.setString(1, "Not paid");
+            stmt.setString(2, "Not paid");
+            stmt.setInt(1, id);
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                  runnerId = resultSet.getInt("runner_id");
@@ -417,27 +420,28 @@ public class ParticipantController implements Initializable {
 
 
             Connection con = Db_Connect.Connect_Db();
-
+            if(areFieldsEmpty() == false){
             if (con != null) {
                 PreparedStatement statement = con.prepareStatement(
                         "INSERT INTO participation (marathon_id, runner_id, registration_date, payment_status) " +
                                 "VALUES (?, ?, ?, ? )");
-                statement.setInt(1,marathon_id);
+                statement.setInt(1, marathon_id);
                 statement.setInt(2, runnerId);
                 System.out.println(runnerId);
                 statement.setDate(3, Date.valueOf(date));
                 statement.setString(4, PayedTxt);
                 statement.executeUpdate();
                 //clearFields();
-                    participationTable.setVisible(true);
-                    runnerTable.setVisible(false);
-                    initialize_Participation();
-                    PreparedStatement statement1 = con.prepareStatement("UPDATE runner SET Payment_status = ? WHERE runner_id = ?");
-                    statement1.setString(1, PayedTxt);
-                    statement1.setInt(2, runnerId);
-                    statement1.executeUpdate();
-
-            }
+                participationTable.setVisible(true);
+                runnerTable.setVisible(false);
+                initialize_Participation();
+                PreparedStatement statement1 = con.prepareStatement("UPDATE runner SET Payment_status = ? WHERE runner_id = ?");
+                statement1.setString(1, PayedTxt);
+                statement1.setInt(2, runnerId);
+                statement1.executeUpdate();
+            } else {
+                showAlert("Error", "Failed to connect to database.");
+            }}
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to insert the runner into the database.");
@@ -455,18 +459,15 @@ public class ParticipantController implements Initializable {
     }
 
     private void showInterface(String name) throws Exception {
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource(name));
-            Scene scene = new Scene(root);
-            Stage stage = new Stage();
-            stage.initStyle(StageStyle.UNDECORATED);
-            stage.setTitle(name);
-            stage.setScene(scene);
-            stage.show();
-            System.out.println(name + " is opened   ");
-        } catch (IOException e) {
-            System.out.println("Error");
-        }
+        Parent root = FXMLLoader.load(getClass().getResource(name));
+
+        Scene scene = new Scene(root);
+        Stage stage = new Stage();
+
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.setTitle("Dashboard");
+        stage.setScene(scene);
+        stage.show();
 
     }
 
@@ -524,5 +525,24 @@ public class ParticipantController implements Initializable {
             }
             System.out.println("Email sent successfully");
         }
+    private boolean areFieldsEmpty() {
+        return RunFirstTxt.getText().isEmpty() || RunLastTxt.getText().isEmpty() || ageFields.getText().isEmpty() || EmailText.getText().isEmpty();
+    }
 
+    public void DeclineRunner(ActionEvent actionEvent) {
+        try (
+                Connection con = Db_Connect.Connect_Db();
+             PreparedStatement stmt = con.prepareStatement("DELETE FROM runner WHERE runner_id = ?")) {
+
+            stmt.setInt(1, runnerId);
+
+            stmt.executeUpdate();
+            showAlert("Success", "Runner Declined successfully.");
+            initialize_Waiting_list();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to delete runner" + e.getMessage());
+        }
+
+    }
 }

@@ -119,6 +119,10 @@ public class Marathon {
     public void setWinner(String winner) {
         this.Winner.set(winner);
     }
+
+    public LocalDate getDate() {
+        return date.get();
+    }
 }
 
 

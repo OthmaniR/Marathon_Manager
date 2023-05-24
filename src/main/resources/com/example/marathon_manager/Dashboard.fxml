@@ -28,7 +28,7 @@
                      <children>
                         <AnchorPane layoutX="26.0" layoutY="-86.0" prefHeight="35.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
-                              <Pane layoutX="196.0" layoutY="-82.0" prefHeight="118.4" prefWidth="1000.0" styleClass="nav-form" stylesheets="@css/dashboardDesign.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                              <Pane layoutX="14.0" prefHeight="118.4" prefWidth="1000.0" styleClass="nav-form" stylesheets="@css/dashboardDesign.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="-14.0" AnchorPane.topAnchor="0.0" />
                            </children></AnchorPane>
                      </children>
                   </AnchorPane>
@@ -286,12 +286,15 @@
                                     </AnchorPane>
                                  </children>
                               </AnchorPane>
-                              <Button fx:id="closeBtn" layoutX="729.0" layoutY="1.0" mnemonicParsing="false" onAction="#CloseAction" text="X" textFill="#e70000" />
+                              <Button fx:id="close" layoutX="729.0" layoutY="1.0" mnemonicParsing="false" onAction="#CloseAction" onMouseClicked="#CloseAction" styleClass="close" stylesheets="@fullpackstyling.css" text="X" textFill="#e70000" />
                            </children>
                         </AnchorPane>
                      </children>
                   </AnchorPane>
                </center>
+               <bottom>
+                  <Pane prefHeight="12.0" prefWidth="1000.0" styleClass="nav-form" stylesheets="@css/dashboardDesign.css" BorderPane.alignment="CENTER" />
+               </bottom>
             </BorderPane>
          </children>
       </AnchorPane>

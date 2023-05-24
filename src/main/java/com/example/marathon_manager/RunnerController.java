@@ -14,6 +14,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
@@ -21,7 +22,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.w3c.dom.events.MouseEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -123,6 +123,9 @@ public class RunnerController implements Initializable {
 
     @FXML
     private Button show_btn;
+
+    @FXML
+    private Button btn_close;
 
     @FXML
     private Button deleteBtn;
@@ -291,30 +294,33 @@ public class RunnerController implements Initializable {
 
         // Insert values into the database
         try {
-            Connection con = Db_Connect.Connect_Db();
-            PreparedStatement stmt = con.prepareStatement("SELECT marathon_id FROM marathon WHERE name = ?");
-            stmt.setString(1, marathon_name); // Set the name parameter
-            ResultSet resultSet = stmt.executeQuery();
-            if (resultSet.next()) {
-                 Ma_Id =  resultSet.getInt("marathon_id");
-            }
-            if (con != null) {
-                PreparedStatement statement = con.prepareStatement(
-                        "INSERT INTO runner (first_name, age, phone_number, gender, email,marathon_id,last_name,Payment_status) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ? , 'Not paid')");
-                statement.setString(1, name);
-                statement.setInt(2, age);
-                statement.setString(3, phone);
-                statement.setString(4, gender);
-                statement.setString(5, email);
-                System.out.println(Ma_Id);
-                statement.setInt(6, Ma_Id);
-                statement.setString(7, last_name);
-                statement.executeUpdate();
-                //clearFields();
-                initialize_Runner();
-                clearFields();
-            }
+
+                Connection con = Db_Connect.Connect_Db();
+                PreparedStatement stmt = con.prepareStatement("SELECT marathon_id FROM marathon WHERE name = ?");
+                stmt.setString(1, marathon_name); // Set the name parameter
+                ResultSet resultSet = stmt.executeQuery();
+                if (resultSet.next()) {
+                    Ma_Id = resultSet.getInt("marathon_id");
+                }
+                if (con != null) {
+                    PreparedStatement statement = con.prepareStatement(
+                            "INSERT INTO runner (first_name, age, phone_number, gender, email,marathon_id,last_name,Payment_status) " +
+                                    "VALUES (?, ?, ?, ?, ?, ?, ? , 'Not paid')");
+                    statement.setString(1, name);
+                    statement.setInt(2, age);
+                    statement.setString(3, phone);
+                    statement.setString(4, gender);
+                    statement.setString(5, email);
+                    System.out.println(Ma_Id);
+                    statement.setInt(6, Ma_Id);
+                    statement.setString(7, last_name);
+                    statement.executeUpdate();
+                    //clearFields();
+                    initialize_Runner();
+                    clearFields();
+                    showAlert("Success", "your request has been sent successfully");
+                }
+
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Failed to insert the runner into the database.");
@@ -475,6 +481,14 @@ public class RunnerController implements Initializable {
     }
 
 
+    public void closerun(MouseEvent mouseEvent) {
+        Stage stage = (Stage) btn_close.getScene().getWindow();
+        stage.close();
+    }
+
+    private boolean areFieldsEmpty(){
+        return name_text.getText().isEmpty()||last_name_text.getText().isEmpty()||marathon_combo.getValue().toString().isEmpty()||age_text.getText().isEmpty()||phone_text.getText().isEmpty()||gender_text.getText().isEmpty()||email_text.getText().isEmpty();
+    }
 }
 
 

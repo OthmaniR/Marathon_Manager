@@ -99,7 +99,8 @@ public class LoginviewController {
                 showDashboardInterface();
 
             } else {
-                System.out.println("Invalid username or password");
+
+                showAlert(Alert.AlertType.ERROR, "Error", "Invalid username or password");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,46 +108,50 @@ public class LoginviewController {
     }
 
     public void signUpUser() {
-        String username = username11.getText();
-        String password = PassSignUp.getText();
-        String confirmPassword = ConfirmPasswordTxt.getText();
 
-        if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Please enter all fields.");
-            return;
-        } else if (!password.equals(confirmPassword)) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Passwords do not match.");
-            return;
-        } else
+        if(areFieldsEmptySignUp() == false) {
 
-        if (password.length() < 8) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Password should be at least 8 characters long.");
-            return;
-        } else {
-        try {
-            String sql = "INSERT INTO users (user_name, password ,user_role) VALUES (?, ? , 'user')";
-            conn = Model.Db_Connect.Connect_Db();
+            String username = username11.getText();
+            String password = PassSignUp.getText();
+            String confirmPassword = ConfirmPasswordTxt.getText();
 
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, password);
-            int rowsInserted = statement.executeUpdate();
-
-            if (rowsInserted > 0) {
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Sign up successful!");
+            if (username.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Please enter all fields.");
+                return;
+            } else if (!password.equals(confirmPassword)) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Passwords do not match.");
+                return;
+            } else if (password.length() < 8) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Password should be at least 8 characters long.");
+                return;
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to insert user.");
+                try {
+                    String sql = "INSERT INTO users (user_name, password ,user_role) VALUES (?, ? , 'user')";
+                    conn = Model.Db_Connect.Connect_Db();
+
+                    PreparedStatement statement = conn.prepareStatement(sql);
+                    statement.setString(1, username);
+                    statement.setString(2, password);
+                    int rowsInserted = statement.executeUpdate();
+
+                    if (rowsInserted > 0) {
+                        showAlert(Alert.AlertType.INFORMATION, "Success", "Sign up successful!");
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Error", "Failed to insert user.");
+                    }
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Database error: " + e.getMessage());
+                }
             }
-        } catch (SQLException e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Database error: " + e.getMessage());
-        }}
 
-        // TODO: Perform additional validation if necessary
+            // TODO: Perform additional validation if necessary
 
-        // TODO: Save the user to the database or perform other actions
+            // TODO: Save the user to the database or perform other actions
 
-        showAlert(Alert.AlertType.INFORMATION, "Success", "Sign up successful!");
-
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Sign up successful!");
+        }else {
+            showAlert(Alert.AlertType.ERROR, "Error", "Please enter all fields.");
+        }
         // Clear the text fields
         username11.clear();
         PassSignUp.clear();
@@ -185,8 +190,9 @@ public class LoginviewController {
 
 
 
-    public void close() {
-        System.exit(0);
+    public void closelog() {
+        Stage stage = (Stage) close.getScene().getWindow();
+        stage.close();
     }
 
     public void CreateAcount(ActionEvent actionEvent) {
@@ -209,5 +215,11 @@ public class LoginviewController {
         passwordL.setManaged(true);
     }
 
+    private boolean areFieldsEmpty() {
+        return username.getText().isEmpty() || passwordL.getText().isEmpty();
+    }
 
+    private boolean areFieldsEmptySignUp() {
+        return username11.getText().isEmpty() || PassSignUp.getText().isEmpty() || ConfirmPasswordTxt.getText().isEmpty();
+    }
 }
